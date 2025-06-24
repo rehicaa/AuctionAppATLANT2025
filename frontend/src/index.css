@@ -1,0 +1,22 @@
+:root {
+  --primary-color: #8A2BE2; 
+  --primary-hover-color: #7b25c9;
+  --background-color: #f8f9fa;
+  --form-background-color: #ffffff;
+  --text-color: #333;
+  --label-color: #666;
+  --border-color: #e0e0e0;
+  --facebook-blue: #3b5998;
+  --google-red: #db4437;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+* {
+  box-sizing: border-box;
+}
