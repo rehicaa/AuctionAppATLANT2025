@@ -1,0 +1,37 @@
+.shop-page {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.main-content {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.shop-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.sort-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+}
+
+.explore-more-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.explore-more-btn {
+    padding: 12px 30px;
+    background-color: #8A2BE2; /* Ljubičasta iz prošlog dizajna */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
