@@ -1,38 +1,101 @@
-import React from 'react';
-import './RegisterPage.css'; // Kreiraćemo i ovu CSS datoteku
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
+import './RegisterPage.css';
 
 const RegisterPage = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    setMessage('');
+    setLoading(true);
+
+    authService.register(firstName, lastName, email, password).then(
+      (response) => {
+        navigate('/login');
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
+  };
+
   return (
     <div className="register-page-container">
       <div className="register-form-container">
         <h2>REGISTER</h2>
-        <form>
+        <form onSubmit={handleRegister}>
           <div className="form-group">
             <label>First Name</label>
-            <input type="text" placeholder="John" required />
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="John"
+              required
+            />
           </div>
           <div className="form-group">
             <label>Last Name</label>
-            <input type="text" placeholder="Doe" required />
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Doe"
+              required
+            />
           </div>
           <div className="form-group">
             <label>Enter Email</label>
-            <input type="email" placeholder="user@domain.com" required />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="user@domain.com"
+              required
+            />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input type="password" placeholder="********" required />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="********"
+              required
+            />
           </div>
-          <button type="submit" className="register-btn">REGISTER</button>
-          
-          <div className="social-signup">
-            <button type="button" className="facebook-btn">Signup With Facebook</button>
-            <button type="button" className="google-btn">Signup With Gmail</button>
+          <div className="form-group">
+            <button type="submit" className="register-btn" disabled={loading}>
+              {loading && <span>Loading...</span>}
+              REGISTER
+            </button>
           </div>
 
-          <p className="login-link">
-            Already have an account? <a href="/login">Login</a>
-          </p>
+          {message && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>

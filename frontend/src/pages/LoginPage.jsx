@@ -1,32 +1,88 @@
-import React from 'react';
-import './LoginPage.css'; // Kreiraćemo ovu CSS datoteku za stilizovanje
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+import authService from '../services/authService'; 
+import './LoginPage.css';
 
 const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    setMessage('');
+    setLoading(true);
+
+    authService.login(email, password).then(
+      () => {
+        navigate('/dashboard'); 
+        window.location.reload(); 
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
+  };
+
   return (
     <div className="login-page-container">
       <div className="login-form-container">
         <h2>LOGIN</h2>
-        <form>
+        <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="user@domain.com" required />
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="user@domain.com"
+              required
+            />
           </div>
+
           <div className="form-group">
-            <label>Password</label>
-            <input type="password" placeholder="********" required />
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="********"
+              required
+            />
           </div>
-          <div className="form-options">
-            <label>
-              <input type="checkbox" /> Remember me
-            </label>
-            <a href="#">Forgot password?</a>
+
+          <div className="form-group">
+            <button className="login-btn" disabled={loading}>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>LOGIN</span>
+            </button>
           </div>
-          <button type="submit" className="login-btn">LOGIN</button>
-          
-          <div className="social-login">
-            <button type="button" className="facebook-btn">Login With Facebook</button>
-            <button type="button" className="google-btn">Login With Gmail</button>
-          </div>
+
+          {message && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>
