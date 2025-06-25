@@ -1,6 +1,7 @@
 package com.auctionapp.backend.service;
 
 import com.auctionapp.backend.dto.AuctionDTO;
+import com.auctionapp.backend.model.Auction; 
 import com.auctionapp.backend.repository.AuctionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,12 +18,12 @@ public class AuctionService {
         return auctionRepository.findAll(pageable).map(this::convertToDto);
     }
 
-    private AuctionDTO convertToDto(com.auctionapp.backend.model.Auction auction) {
-        AuctionDTO dto = new AuctionDTO();
-        dto.setId(auction.getId());
-        dto.setTitle(auction.getTitle());
-        dto.setStartPrice(auction.getStartPrice());
-        dto.setImageUrl(auction.getImageUrl());
-        return dto;
+    private AuctionDTO convertToDto(Auction auction) { 
+        return new AuctionDTO(
+            auction.getId(),
+            auction.getTitle(),
+            auction.getStartPrice(),
+            auction.getImageUrl()
+        );
     }
 }
