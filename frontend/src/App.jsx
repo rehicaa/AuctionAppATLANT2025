@@ -1,20 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+import ShopPage from './pages/ShopPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import RegisterPage from './pages/RegisterPage.jsx';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        {/* Ovdje može ići zajednički Header ili Navbar kasnije */}
         <Routes>
-          {<Route path="/login" element={<LoginPage />} />}
-          {<Route path="/register" element={<RegisterPage />} />}
-          {/* <Route path="/" element={<h1>Početna stranica</h1>} /> */}
+          <Route path="/" element={<Navigate to="/shop" />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/shop" element={<ShopPage />} />
         </Routes>
-        {/* Ovdje može ići zajednički Footer */}
       </div>
     </Router>
   );

@@ -1,0 +1,10 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+.logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #8A2BE2; }
+.main-nav a, .auth-links a { margin: 0 15px; text-decoration: none; color: #333; font-weight: 500; }
