@@ -1,0 +1,90 @@
+.product-detail-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    gap: 40px;
+    background-color: #fff;
+    border: 1px solid #eee;
+}
+
+.product-detail-image-section {
+    flex: 1;
+}
+
+.product-detail-image-section img {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+}
+
+.product-detail-info-section {
+    flex: 1;
+    padding: 20px;
+}
+
+.product-detail-info-section h1 {
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.product-description h2 {
+    font-size: 1.2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.product-description p {
+    line-height: 1.6;
+    color: #555;
+}
+
+.auction-end-time {
+    margin-top: 20px;
+    font-style: italic;
+    color: #777;
+}
+
+.bid-section {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+.bid-input {
+    flex-grow: 1;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.bid-button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.bid-button:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    padding: 20px;
+}
