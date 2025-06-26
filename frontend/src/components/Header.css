@@ -19,13 +19,46 @@
   text-decoration: none;
 }
 
-.main-nav a, .auth-links a { 
+.main-nav {
+  display: flex;
+  align-items: center;
+}
+
+.main-nav a, .auth-links a, .my-account-link > a { 
   margin: 0 15px; 
   text-decoration: none; 
   color: #333; 
-  font-weight: 500;
+  font-weight: 500; 
 }
 
 .auth-links {
   color: var(--label-color);
+}
+
+.my-account-link {
+  position: relative;
+  display: inline-block;
+}
+
+.account-dropdown {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border: 1px solid var(--border-color);
+}
+
+.account-dropdown a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin: 0;
+  text-align: left;
+}
+
+.account-dropdown a:hover {
+  background-color: #f1f1f1;
 }

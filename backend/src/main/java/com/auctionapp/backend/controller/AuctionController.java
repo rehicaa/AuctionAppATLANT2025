@@ -1,13 +1,17 @@
 package com.auctionapp.backend.controller;
 
 import com.auctionapp.backend.dto.AuctionDTO;
+import com.auctionapp.backend.dto.CreateAuctionRequest;
+import com.auctionapp.backend.model.User;
 import com.auctionapp.backend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,5 +39,13 @@ public class AuctionController {
     public ResponseEntity<AuctionDTO> getAuctionById(@PathVariable Long id) {
         AuctionDTO auction = auctionService.getAuctionById(id);
         return ResponseEntity.ok(auction);
+    }
+
+    @PostMapping
+    public ResponseEntity<AuctionDTO> createAuction(
+            @RequestBody CreateAuctionRequest request,
+            @AuthenticationPrincipal User user) {
+        AuctionDTO createdAuction = auctionService.createAuction(request, user);
+        return new ResponseEntity<>(createdAuction, HttpStatus.CREATED);
     }
 }

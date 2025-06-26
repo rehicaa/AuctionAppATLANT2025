@@ -1,9 +1,27 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import './Header.css';
 
 const Header = () => {
-  const currentUser = null; // Ovde ćeš kasnije dodati logiku za prijavljenog korisnika
+  const [currentUser, setCurrentUser] = useState(undefined);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    authService.logout();
+    setCurrentUser(undefined);
+    setShowDropdown(false);
+    navigate('/login');
+    window.location.reload();
+  };
 
   return (
     <header className="app-header">
@@ -14,12 +32,26 @@ const Header = () => {
         <nav className="main-nav">
           <Link to="/shop">HOME</Link>
           <Link to="/shop">SHOP</Link>
-          {currentUser && <Link to="/my-account">MY ACCOUNT</Link>}
+          {currentUser && (
+            <div 
+              className="my-account-link"
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
+            >
+              <a href="#">MY ACCOUNT</a>
+              {showDropdown && (
+                <div className="account-dropdown">
+                  <Link to="/profile">Profile</Link>
+                  <Link to="/sell">Become a Seller</Link>
+                  <Link to="/bids">My Bids</Link>
+                  <a href="#" onClick={handleLogout} style={{cursor: 'pointer'}}>Logout</a>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
         <div className="auth-links">
-          {currentUser ? (
-            <span>Welcome!</span> // Zameni sa logout dugmetom
-          ) : (
+          {!currentUser && (
             <>
               <Link to="/login">Login</Link> or <Link to="/register">Create an Account</Link>
             </>
