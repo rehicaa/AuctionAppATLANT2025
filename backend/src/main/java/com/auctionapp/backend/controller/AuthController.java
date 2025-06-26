@@ -1,6 +1,7 @@
 package com.auctionapp.backend.controller;
 
 import com.auctionapp.backend.dto.AuthResponse;
+import com.auctionapp.backend.dto.GoogleLoginRequest;
 import com.auctionapp.backend.dto.LoginRequest;
 import com.auctionapp.backend.dto.RegisterRequest;
 import com.auctionapp.backend.service.AuthService;
@@ -26,5 +27,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> googleLogin(@RequestBody GoogleLoginRequest request) {
+        return ResponseEntity.ok(authService.loginWithGoogle(request.getToken()));
     }
 }

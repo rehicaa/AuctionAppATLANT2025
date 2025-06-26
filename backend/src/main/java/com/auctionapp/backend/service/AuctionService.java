@@ -8,10 +8,15 @@ import com.auctionapp.backend.model.User;
 import com.auctionapp.backend.repository.AuctionRepository;
 import com.auctionapp.backend.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +25,18 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<AuctionDTO> getAuctions(Pageable pageable) {
-        return auctionRepository.findAll(pageable).map(this::convertToDto);
+    public Page<AuctionDTO> getAuctions(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice) {
+        Specification<Auction> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (minPrice != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("startPrice"), minPrice));
+            }
+            if (maxPrice != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("startPrice"), maxPrice));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        return auctionRepository.findAll(spec, pageable).map(this::convertToDto);
     }
 
     public AuctionDTO getAuctionById(Long id) {

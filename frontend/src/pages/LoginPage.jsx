@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import authService from '../services/authService'; 
+import { GoogleLogin } from '@react-oauth/google';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -31,6 +32,30 @@ const LoginPage = () => {
         setMessage(resMessage);
       }
     );
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    const token = credentialResponse.credential;
+    setLoading(true);
+    setMessage('');
+    authService.loginWithGoogle(token).then(
+      () => {
+        navigate('/shop');
+        window.location.reload();
+      },
+      (error) => {
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString();
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
+  };
+
+  const handleGoogleError = () => {
+    setMessage('Google Login was unsuccessful. Please try again.');
   };
 
   return (
@@ -71,14 +96,21 @@ const LoginPage = () => {
                 <span>LOGIN</span>
               </button>
             </div>
-            {message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {message}
-                </div>
-              </div>
-            )}
           </form>
+          <div className="social-login">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+            />
+          </div>
+          {message && (
+            <div className="form-group" style={{marginTop: '20px'}}>
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

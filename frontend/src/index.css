@@ -1,18 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 :root {
   --primary-color: #8A2BE2; 
   --primary-hover-color: #7b25c9;
   --background-color: #f8f9fa;
   --form-background-color: #ffffff;
-  --text-color: #333;
-  --label-color: #666;
-  --border-color: #e0e0e0;
-  --footer-bg-color: #333;
-  --footer-text-color: #aaa;
+  --text-color: #212529;
+  --label-color: #6c757d;
+  --border-color: #dee2e6;
+  --footer-bg-color: #343a40;
+  --footer-text-color: #adb5bd;
+  --card-bg-color: #ffffff;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', sans-serif;
   color: var(--text-color);
   background-color: var(--background-color);
 }
@@ -23,7 +26,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 20px;
