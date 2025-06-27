@@ -16,4 +16,6 @@ public class AuctionDTO {
     private BigDecimal startPrice;
     private String imageUrl;
     private LocalDateTime endTime;
+    private Long sellerId;
+    private String categoryName;
 }

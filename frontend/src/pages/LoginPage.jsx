@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import authService from '../services/authService'; 
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import { GoogleLogin } from '@react-oauth/google';
-import './LoginPage.css';
+import '../styles/Form.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -19,13 +19,11 @@ const LoginPage = () => {
     authService.login(email, password).then(
       () => {
         navigate('/shop');
-        window.location.reload(); 
+        window.location.reload();
       },
       (error) => {
         const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
+          (error.response?.data?.message) ||
           error.message ||
           error.toString();
         setLoading(false);
@@ -45,7 +43,7 @@ const LoginPage = () => {
       },
       (error) => {
         const resMessage =
-          (error.response && error.response.data && error.response.data.message) ||
+          (error.response?.data?.message) ||
           error.message ||
           error.toString();
         setLoading(false);
@@ -59,59 +57,51 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container">
-      <div className="login-page-container">
-        <div className="login-form-container">
-          <h2>LOGIN</h2>
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@domain.com"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="********"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <button className="login-btn" disabled={loading}>
-                {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-                <span>LOGIN</span>
-              </button>
-            </div>
-          </form>
-          <div className="social-login">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap
+    <div className="form-page-container">
+      <div className="form-container">
+        <h2>LOGIN</h2>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
-          {message && (
-            <div className="form-group" style={{marginTop: '20px'}}>
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
-            </div>
-          )}
+          <div className="form-group">
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-actions">
+            <button type="submit" className="primary-btn" disabled={loading}>
+              {loading ? 'LOGGING IN...' : 'LOGIN'}
+            </button>
+          </div>
+        </form>
+        <div className="divider">or</div>
+        <div className="google-login-container">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="continue_with"
+            shape="rectangular"
+            theme="outline"
+          />
         </div>
+        {message && (
+          <div className="alert alert-danger" style={{marginTop: '20px'}}>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );

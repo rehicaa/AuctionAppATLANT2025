@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
 import auctionService from '../services/auctionService.js';
+import categoryService from '../services/categoryService.js';
 import './ShopPage.css';
 
 const ShopPage = () => {
@@ -11,13 +12,21 @@ const ShopPage = () => {
     const [sort, setSort] = useState('startTime,desc');
     const [priceRange, setPriceRange] = useState([0, 0]);
     const [loading, setLoading] = useState(false);
+    const [allCategories, setAllCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
-    const fetchAuctions = useCallback((currentPage, currentSort, currentPriceRange, isLoadMore = false) => {
+    useEffect(() => {
+        categoryService.getAllCategories()
+            .then(response => setAllCategories(response.data))
+            .catch(error => console.error("Error fetching categories:", error));
+    }, []);
+
+    const fetchAuctions = useCallback((currentPage, currentSort, currentPriceRange, currentCategories, isLoadMore = false) => {
         setLoading(true);
         const [sortBy, sortOrder] = currentSort.split(',');
         const [minPrice, maxPrice] = currentPriceRange;
 
-        auctionService.getAuctions(currentPage, 8, sortBy, sortOrder, minPrice, maxPrice)
+        auctionService.getAuctions(currentPage, 8, sortBy, sortOrder, minPrice, maxPrice, currentCategories)
             .then(response => {
                 const data = response.data;
                 if (isLoadMore) {
@@ -37,13 +46,13 @@ const ShopPage = () => {
 
     useEffect(() => {
         setPage(0);
-        fetchAuctions(0, sort, priceRange, false);
-    }, [sort, priceRange, fetchAuctions]);
+        fetchAuctions(0, sort, priceRange, selectedCategories, false);
+    }, [sort, priceRange, selectedCategories, fetchAuctions]);
 
     const handleExploreMore = () => {
         const nextPage = page + 1;
         setPage(nextPage);
-        fetchAuctions(nextPage, sort, priceRange, true);
+        fetchAuctions(nextPage, sort, priceRange, selectedCategories, true);
     };
 
     const handleSortChange = (e) => {
@@ -54,16 +63,29 @@ const ShopPage = () => {
         setPriceRange(newPriceRange);
     };
 
+    const handleCategoryChange = (categoryId) => {
+        setSelectedCategories(prev =>
+            prev.includes(categoryId)
+                ? prev.filter(id => id !== categoryId)
+                : [...prev, categoryId]
+        );
+    };
+
     const handleCollapse = () => {
         setPage(0);
-        setAuctions(prev => prev.slice(0, 8)); // Prikazi samo prvih 8
-        setHasMore(true); // Omoguci ponovo "Explore More"
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // Skroluj na vrh stranice
+        setAuctions(prev => prev.slice(0, 8));
+        setHasMore(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     
     return (
         <div className="shop-page">
-            <Sidebar onPriceChange={handlePriceChange} />
+            <Sidebar 
+                onPriceChange={handlePriceChange} 
+                onCategoryChange={handleCategoryChange}
+                allCategories={allCategories}
+                selectedCategories={selectedCategories}
+            />
             <div className="shop-main-content">
                 <div className="shop-header">
                     <select className="sort-dropdown" value={sort} onChange={handleSortChange}>

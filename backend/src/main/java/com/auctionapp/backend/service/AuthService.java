@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +40,13 @@ public class AuthService {
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(user);
+        var claims = new HashMap<String, Object>();
+        claims.put("userId", user.getId());
+        claims.put("firstName", user.getFirstName());
+        
+        var jwtToken = jwtService.generateToken(claims, user);
         return new AuthResponse(jwtToken);
     }
 
@@ -54,7 +59,12 @@ public class AuthService {
         );
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        
+        var claims = new HashMap<String, Object>();
+        claims.put("userId", user.getId());
+        claims.put("firstName", user.getFirstName());
+        
+        var jwtToken = jwtService.generateToken(claims, user);
         return new AuthResponse(jwtToken);
     }
 
@@ -79,8 +89,10 @@ public class AuthService {
                             newUser.setLastName(lastName != null ? lastName : "");
                             return userRepository.save(newUser);
                         });
-
-                var jwtToken = jwtService.generateToken(user);
+                
+                var claims = new HashMap<String, Object>();
+                claims.put("userId", user.getId());
+                var jwtToken = jwtService.generateToken(claims, user);
                 return new AuthResponse(jwtToken);
 
             } else {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import auctionService from '../services/auctionService';
+import authService from '../services/authService';
 import './ProductDetailPage.css';
 
 const ProductDetailPage = () => {
@@ -8,8 +10,20 @@ const ProductDetailPage = () => {
     const [auction, setAuction] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [currentUserId, setCurrentUserId] = useState(null);
+
+    const currentUser = authService.getCurrentUser();
 
     useEffect(() => {
+        if (currentUser && currentUser.token) {
+            try {
+                const decoded = jwtDecode(currentUser.token);
+                setCurrentUserId(decoded.userId);
+            } catch (err) {
+                console.error("Invalid token");
+            }
+        }
+
         auctionService.getAuctionById(id)
             .then(response => {
                 setAuction(response.data);
@@ -19,7 +33,32 @@ const ProductDetailPage = () => {
                 setError('Error fetching auction details.');
                 setLoading(false);
             });
-    }, [id]);
+    }, [id, currentUser]);
+
+    const renderBidSection = () => {
+        if (!currentUser) {
+            return (
+                <div className="login-prompt">
+                    <p>Please <Link to="/login">log in</Link> to place a bid.</p>
+                </div>
+            );
+        }
+
+        if (currentUserId === auction.sellerId) {
+            return (
+                <div className="owner-prompt">
+                    <p>This is your auction. You cannot place a bid.</p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="bid-section">
+                <input type="number" placeholder="Your bid" className="bid-input" />
+                <button className="bid-button">Place Bid</button>
+            </div>
+        );
+    };
 
     if (loading) {
         return <div className="container">Loading...</div>;
@@ -40,6 +79,7 @@ const ProductDetailPage = () => {
                     <img src={auction.imageUrl || 'https://via.placeholder.com/600x500'} alt={auction.title} />
                 </div>
                 <div className="product-detail-info-section">
+                    <span className="category-tag">{auction.categoryName}</span>
                     <h1>{auction.title}</h1>
                     <p className="product-price">Starts from: ${auction.startPrice}</p>
                     <div className="product-description">
@@ -49,10 +89,7 @@ const ProductDetailPage = () => {
                     <div className="auction-end-time">
                         <p>Auction ends on: {new Date(auction.endTime).toLocaleString()}</p>
                     </div>
-                    <div className="bid-section">
-                        <input type="number" placeholder="Your bid" className="bid-input" />
-                        <button className="bid-button">Place Bid</button>
-                    </div>
+                    {renderBidSection()}
                 </div>
             </div>
         </div>

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auctions")
@@ -29,12 +30,13 @@ public class AuctionController {
             @RequestParam(defaultValue = "startTime") String sortBy,
             @RequestParam(defaultValue = "desc") String sortOrder,
             @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice) {
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) List<Long> categoryIds) {
         
         Sort.Direction direction = "asc".equalsIgnoreCase(sortOrder) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         
-        Page<AuctionDTO> auctions = auctionService.getAuctions(pageable, minPrice, maxPrice);
+        Page<AuctionDTO> auctions = auctionService.getAuctions(pageable, minPrice, maxPrice, categoryIds);
         return ResponseEntity.ok(auctions);
     }
 
