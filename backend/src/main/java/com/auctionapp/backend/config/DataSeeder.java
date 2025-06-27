@@ -27,7 +27,6 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (categoryRepository.count() == 0 && userRepository.count() == 0) { 
 
-           
             User seller = new User();
             seller.setFirstName("John");
             seller.setLastName("Doe");
@@ -35,7 +34,6 @@ public class DataSeeder implements CommandLineRunner {
             seller.setPassword(passwordEncoder.encode("password123"));
             userRepository.save(seller);
 
-            // 2. Kreiraj kategorije
             Category women = new Category();
             women.setName("Women");
 
@@ -52,9 +50,8 @@ public class DataSeeder implements CommandLineRunner {
             home.setName("Home");
             
             categoryRepository.saveAll(List.of(women, men, kids, electronics, home));
-
             
- Auction a1 = new Auction();
+            Auction a1 = new Auction();
             a1.setTitle("Vintage Leather Jacket");
             a1.setDescription("A beautiful vintage leather jacket from the 80s. In perfect condition.");
             a1.setStartPrice(new BigDecimal("120.00"));

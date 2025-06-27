@@ -25,7 +25,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<AuctionDTO> getAuctions(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice) {
+    public Page<AuctionDTO> getAuctions(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice, List<Long> categoryIds) {
         Specification<Auction> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (minPrice != null) {
@@ -33,6 +33,9 @@ public class AuctionService {
             }
             if (maxPrice != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("startPrice"), maxPrice));
+            }
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+                predicates.add(root.get("category").get("id").in(categoryIds));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -70,7 +73,9 @@ public class AuctionService {
             auction.getDescription(),
             auction.getStartPrice(),
             auction.getImageUrl(),
-            auction.getEndTime()
+            auction.getEndTime(),
+            auction.getSeller().getId(),
+            auction.getCategory().getName()
         );
     }
 }

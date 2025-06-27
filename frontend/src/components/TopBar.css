@@ -1,0 +1,47 @@
+.top-bar {
+  background-color: #212529;
+  color: #adb5bd;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.top-bar-content {
+  display: flex;
+  align-items: center;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-section {
+  margin-left: auto;
+}
+
+.social-links a,
+.auth-links-top a {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.social-links a:hover,
+.auth-links-top a:hover {
+  color: white;
+}
+
+.auth-links-top span {
+  margin: 0 5px;
+}
+
+.welcome-message {
+  color: white;
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        display: none;
+    }
+}

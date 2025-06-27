@@ -3,7 +3,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './Sidebar.css';
 
-const Sidebar = ({ onPriceChange }) => {
+const Sidebar = ({ onPriceChange, onCategoryChange, allCategories, selectedCategories }) => {
     const [price, setPrice] = useState([0, 1000]);
 
     const handleSliderChange = (newPrice) => {
@@ -18,12 +18,19 @@ const Sidebar = ({ onPriceChange }) => {
         <aside className="sidebar">
             <div className="sidebar-section">
                 <h4>PRODUCT CATEGORIES</h4>
-                <ul>
-                    <li>Women</li>
-                    <li>Men</li>
-                    <li>Kids</li>
-                    <li>Electronics</li>
-                    <li>Home</li>
+                <ul className="category-list">
+                    {allCategories.map(category => (
+                        <li key={category.id}>
+                            <label className="category-label">
+                                <input 
+                                    type="checkbox" 
+                                    checked={selectedCategories.includes(category.id)}
+                                    onChange={() => onCategoryChange(category.id)}
+                                />
+                                {category.name}
+                            </label>
+                        </li>
+                    ))}
                 </ul>
             </div>
             <div className="sidebar-section">

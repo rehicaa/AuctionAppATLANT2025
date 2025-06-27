@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import { GoogleLogin } from '@react-oauth/google';
-import './RegisterPage.css';
+import '../styles/Form.css';
 
 const RegisterPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -16,22 +16,19 @@ const RegisterPage = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-
     setMessage('');
     setLoading(true);
 
     authService.register(firstName, lastName, email, password).then(
-      (response) => {
-        navigate('/login');
+      () => {
+        navigate('/shop');
+        window.location.reload();
       },
       (error) => {
         const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
+          (error.response?.data?.message) ||
           error.message ||
           error.toString();
-
         setLoading(false);
         setMessage(resMessage);
       }
@@ -49,7 +46,7 @@ const RegisterPage = () => {
       },
       (error) => {
         const resMessage =
-          (error.response && error.response.data && error.response.data.message) ||
+          (error.response?.data?.message) ||
           error.message ||
           error.toString();
         setLoading(false);
@@ -63,68 +60,69 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-page-container">
-      <div className="register-form-container">
+    <div className="form-page-container">
+      <div className="form-container">
         <h2>REGISTER</h2>
         <form onSubmit={handleRegister}>
           <div className="form-group">
-            <label>First Name</label>
+            <label htmlFor="firstName">First Name</label>
             <input
+              id="firstName"
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="John"
               required
             />
           </div>
           <div className="form-group">
-            <label>Last Name</label>
+            <label htmlFor="lastName">Last Name</label>
             <input
+              id="lastName"
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              placeholder="Doe"
               required
             />
           </div>
           <div className="form-group">
-            <label>Enter Email</label>
+            <label htmlFor="email">Enter Email</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@domain.com"
               required
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
               required
             />
           </div>
-          <div className="form-group">
-            <button type="submit" className="register-btn" disabled={loading}>
-              {loading && <span>Loading...</span>}
-              REGISTER
+          <div className="form-actions">
+            <button type="submit" className="primary-btn" disabled={loading}>
+              {loading ? 'REGISTERING...' : 'REGISTER'}
             </button>
           </div>
         </form>
-        <div className="social-signup">
+        <div className="divider">or</div>
+        <div className="google-login-container">
            <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
+                text="continue_with"
+                shape="rectangular"
+                theme="outline"
            />
         </div>
         {message && (
-            <div className="form-group" style={{marginTop: '20px'}}>
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
+            <div className="alert alert-danger" style={{marginTop: '20px'}}>
+              {message}
             </div>
           )}
       </div>
