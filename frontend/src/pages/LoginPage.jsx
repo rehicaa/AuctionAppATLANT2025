@@ -8,18 +8,16 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     setMessage('');
     setLoading(true);
 
     authService.login(email, password).then(
       () => {
-        navigate('/dashboard'); 
+        navigate('/shop');
         window.location.reload(); 
       },
       (error) => {
@@ -29,7 +27,6 @@ const LoginPage = () => {
             error.response.data.message) ||
           error.message ||
           error.toString();
-
         setLoading(false);
         setMessage(resMessage);
       }
@@ -37,53 +34,52 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page-container">
-      <div className="login-form-container">
-        <h2>LOGIN</h2>
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@domain.com"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <button className="login-btn" disabled={loading}>
-              {loading && (
-                <span className="spinner-border spinner-border-sm"></span>
-              )}
-              <span>LOGIN</span>
-            </button>
-          </div>
-
-          {message && (
+    <div className="container">
+      <div className="login-page-container">
+        <div className="login-form-container">
+          <h2>LOGIN</h2>
+          <form onSubmit={handleLogin}>
             <div className="form-group">
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="user@domain.com"
+                required
+              />
             </div>
-          )}
-        </form>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="********"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <button className="login-btn" disabled={loading}>
+                {loading && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )}
+                <span>LOGIN</span>
+              </button>
+            </div>
+            {message && (
+              <div className="form-group">
+                <div className="alert alert-danger" role="alert">
+                  {message}
+                </div>
+              </div>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );

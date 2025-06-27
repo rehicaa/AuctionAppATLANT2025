@@ -1,8 +1,9 @@
 package com.auctionapp.backend.service;
 
 import com.auctionapp.backend.dto.AuctionDTO;
-import com.auctionapp.backend.model.Auction; 
+import com.auctionapp.backend.model.Auction;
 import com.auctionapp.backend.repository.AuctionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,12 +19,20 @@ public class AuctionService {
         return auctionRepository.findAll(pageable).map(this::convertToDto);
     }
 
-    private AuctionDTO convertToDto(Auction auction) { 
+    public AuctionDTO getAuctionById(Long id) {
+        return auctionRepository.findById(id)
+                .map(this::convertToDto)
+                .orElseThrow(() -> new EntityNotFoundException("Auction not found with id: " + id));
+    }
+
+    private AuctionDTO convertToDto(Auction auction) {
         return new AuctionDTO(
             auction.getId(),
             auction.getTitle(),
+            auction.getDescription(),
             auction.getStartPrice(),
-            auction.getImageUrl()
+            auction.getImageUrl(),
+            auction.getEndTime()
         );
     }
 }

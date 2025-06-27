@@ -6,17 +6,26 @@
   --text-color: #333;
   --label-color: #666;
   --border-color: #e0e0e0;
-  --facebook-blue: #3b5998;
-  --google-red: #db4437;
+  --footer-bg-color: #333;
+  --footer-text-color: #aaa;
 }
 
 body {
   margin: 0;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-  background-color: var(--background-color);
   color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 * {
   box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }
