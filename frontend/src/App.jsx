@@ -6,6 +6,7 @@ import ShopPage from './pages/ShopPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
+import BecomeSellerPage from './pages/BecomeSellerPage.jsx';
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/auctions/:id" element={<ProductDetailPage />} />
+              <Route path="/sell" element={<BecomeSellerPage />} />
             </Routes>
           </div>
         </main>
