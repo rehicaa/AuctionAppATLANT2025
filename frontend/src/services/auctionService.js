@@ -3,15 +3,22 @@ import authHeader from './authHeader';
 
 const API_URL = 'http://localhost:8080/api/auctions';
 
-const getAuctions = (page = 0, size = 8, sortBy = 'startTime', sortOrder = 'desc') => {
-    return axios.get(API_URL, {
-        params: {
-            page,
-            size,
-            sortBy,
-            sortOrder
-        }
+const getAuctions = (page = 0, size = 8, sortBy = 'startTime', sortOrder = 'desc', minPrice = null, maxPrice = null) => {
+    const params = new URLSearchParams({
+        page,
+        size,
+        sortBy,
+        sortOrder
     });
+
+    if (minPrice !== null) {
+        params.append('minPrice', minPrice);
+    }
+    if (maxPrice !== null && maxPrice > 0) {
+        params.append('maxPrice', maxPrice);
+    }
+
+    return axios.get(API_URL, { params });
 };
 
 const getAuctionById = (id) => {

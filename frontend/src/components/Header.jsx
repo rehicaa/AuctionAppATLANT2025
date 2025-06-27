@@ -27,10 +27,10 @@ const Header = () => {
     <header className="app-header">
       <div className="container header-content">
         <div className="logo">
-          <Link to="/shop">AUCTION</Link>
+          <Link to="/">AUCTION</Link> {/* Promijeni link logotipa */}
         </div>
         <nav className="main-nav">
-          <Link to="/shop">HOME</Link>
+          <Link to="/">HOME</Link> {/* Promijeni ovaj link */}
           <Link to="/shop">SHOP</Link>
           {currentUser && (
             <div 
