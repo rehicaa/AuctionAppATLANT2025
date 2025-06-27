@@ -18,9 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -87,11 +88,13 @@ public class AuthService {
                             newUser.setEmail(email);
                             newUser.setFirstName(firstName != null ? firstName : "");
                             newUser.setLastName(lastName != null ? lastName : "");
+                            newUser.setPassword(passwordEncoder.encode(generateRandomPassword()));
                             return userRepository.save(newUser);
                         });
                 
                 var claims = new HashMap<String, Object>();
                 claims.put("userId", user.getId());
+                claims.put("firstName", user.getFirstName());
                 var jwtToken = jwtService.generateToken(claims, user);
                 return new AuthResponse(jwtToken);
 
@@ -101,5 +104,12 @@ public class AuthService {
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException("Token verification failed", e);
         }
+    }
+
+    private String generateRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[24];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }

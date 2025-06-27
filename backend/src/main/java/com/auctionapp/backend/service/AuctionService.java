@@ -25,9 +25,10 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<AuctionDTO> getAuctions(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice, List<Long> categoryIds) {
+    public Page<AuctionDTO> getAuctions(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice, List<Long> categoryIds, String searchTerm) {
         Specification<Auction> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            
             if (minPrice != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("startPrice"), minPrice));
             }
@@ -37,6 +38,14 @@ public class AuctionService {
             if (categoryIds != null && !categoryIds.isEmpty()) {
                 predicates.add(root.get("category").get("id").in(categoryIds));
             }
+            
+            if (searchTerm != null && !searchTerm.isBlank()) {
+                String likePattern = "%" + searchTerm.toLowerCase() + "%";
+                Predicate titleLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern);
+                Predicate descriptionLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), likePattern);
+                predicates.add(criteriaBuilder.or(titleLike, descriptionLike));
+            }
+            
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         return auctionRepository.findAll(spec, pageable).map(this::convertToDto);
@@ -66,7 +75,7 @@ public class AuctionService {
         return convertToDto(savedAuction);
     }
 
-    private AuctionDTO convertToDto(Auction auction) {
+    public AuctionDTO convertToDto(Auction auction) {
         return new AuctionDTO(
             auction.getId(),
             auction.getTitle(),

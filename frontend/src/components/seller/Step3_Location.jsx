@@ -18,7 +18,7 @@ const Step3_Location = ({ prevStep, handleChange, values }) => {
             title,
             description,
             startPrice: parseFloat(startPrice),
-            startTime: `${startTime}T00:00:00`, // Formatiranje datuma za backend
+            startTime: `${startTime}T00:00:00`, 
             endTime: `${endTime}T23:59:59`,
             imageUrl,
             categoryId: parseInt(categoryId),
@@ -27,7 +27,6 @@ const Step3_Location = ({ prevStep, handleChange, values }) => {
         auctionService.createAuction(auctionData)
             .then(response => {
                 setLoading(false);
-                // Preusmeri korisnika na stranicu novog proizvoda
                 navigate(`/auctions/${response.data.id}`);
             })
             .catch(err => {

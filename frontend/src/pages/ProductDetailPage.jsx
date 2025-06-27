@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { FiHeart } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 import auctionService from '../services/auctionService';
 import authService from '../services/authService';
+import wishlistService from '../services/wishlistService';
 import './ProductDetailPage.css';
 
 const ProductDetailPage = () => {
@@ -34,6 +37,18 @@ const ProductDetailPage = () => {
                 setLoading(false);
             });
     }, [id, currentUser]);
+
+    const handleAddToWishlist = () => {
+        if (!auction) return;
+        
+        const promise = wishlistService.addToWishlist(auction.id);
+        
+        toast.promise(promise, {
+            loading: 'Adding...',
+            success: <b>{auction.title} added to wishlist!</b>,
+            error: <b>Could not add to wishlist.</b>
+        });
+    };
 
     const renderBidSection = () => {
         if (!currentUser) {
@@ -81,7 +96,14 @@ const ProductDetailPage = () => {
                 <div className="product-detail-info-section">
                     <span className="category-tag">{auction.categoryName}</span>
                     <h1>{auction.title}</h1>
-                    <p className="product-price">Starts from: ${auction.startPrice}</p>
+                    <div className="price-wishlist-wrapper">
+                        <p className="product-price">Starts from: ${auction.startPrice}</p>
+                        {currentUser && (
+                            <button className="wishlist-btn-page" onClick={handleAddToWishlist}>
+                                <FiHeart /> Add to Wishlist
+                            </button>
+                        )}
+                    </div>
                     <div className="product-description">
                         <h2>Description</h2>
                         <p>{auction.description || 'No description available.'}</p>
