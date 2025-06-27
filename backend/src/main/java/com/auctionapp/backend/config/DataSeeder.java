@@ -2,17 +2,27 @@ package com.auctionapp.backend.config;
 
 import com.auctionapp.backend.model.Auction;
 import com.auctionapp.backend.model.Category;
-import com.auctionapp.backend.model.User; 
+import com.auctionapp.backend.model.User;
 import com.auctionapp.backend.repository.AuctionRepository;
 import com.auctionapp.backend.repository.CategoryRepository;
-import com.auctionapp.backend.repository.UserRepository; 
+import com.auctionapp.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder; 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+/**
+ * Ova klasa implementira CommandLineRunner kako bi popunila bazu podataka
+ * s početnim (mock) podacima prilikom pokretanja aplikacije.
+ * Podaci se unose samo ako su tablice kategorija i korisnika prazne,
+ * kako bi se osiguralo da se popunjavanje dogodi samo jednom.
+ * Svrha je osigurati set podataka za testiranje i razvoj.
+ */
 
 @Component
 @RequiredArgsConstructor
@@ -20,18 +30,21 @@ public class DataSeeder implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final AuctionRepository auctionRepository;
-    private final UserRepository userRepository; 
-    private final PasswordEncoder passwordEncoder; 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${seeder.seller.password}")
+    private String sellerPassword;
 
     @Override
     public void run(String... args) throws Exception {
-        if (categoryRepository.count() == 0 && userRepository.count() == 0) { 
+        if (categoryRepository.count() == 0 && userRepository.count() == 0) {
 
             User seller = new User();
             seller.setFirstName("John");
             seller.setLastName("Doe");
             seller.setEmail("seller@auction.com");
-            seller.setPassword(passwordEncoder.encode("password123"));
+            seller.setPassword(passwordEncoder.encode(sellerPassword));
             userRepository.save(seller);
 
             Category women = new Category();

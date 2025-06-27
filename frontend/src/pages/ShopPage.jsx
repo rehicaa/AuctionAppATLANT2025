@@ -5,6 +5,22 @@ import auctionService from '../services/auctionService.js';
 import categoryService from '../services/categoryService.js';
 import './ShopPage.css';
 
+const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
 const ShopPage = () => {
     const [auctions, setAuctions] = useState([]);
     const [page, setPage] = useState(0);
@@ -14,19 +30,16 @@ const ShopPage = () => {
     const [loading, setLoading] = useState(false);
     const [allCategories, setAllCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-    useEffect(() => {
-        categoryService.getAllCategories()
-            .then(response => setAllCategories(response.data))
-            .catch(error => console.error("Error fetching categories:", error));
-    }, []);
-
-    const fetchAuctions = useCallback((currentPage, currentSort, currentPriceRange, currentCategories, isLoadMore = false) => {
+    const fetchAuctions = useCallback((currentPage, currentSort, currentPriceRange, currentCategories, currentSearchTerm, isLoadMore = false) => {
         setLoading(true);
         const [sortBy, sortOrder] = currentSort.split(',');
         const [minPrice, maxPrice] = currentPriceRange;
 
-        auctionService.getAuctions(currentPage, 8, sortBy, sortOrder, minPrice, maxPrice, currentCategories)
+        auctionService.getAuctions(currentPage, 8, sortBy, sortOrder, minPrice, maxPrice, currentCategories, currentSearchTerm)
             .then(response => {
                 const data = response.data;
                 if (isLoadMore) {
@@ -43,16 +56,22 @@ const ShopPage = () => {
                 setLoading(false);
             });
     }, []);
+    
+    useEffect(() => {
+        categoryService.getAllCategories()
+            .then(response => setAllCategories(response.data))
+            .catch(error => console.error("Error fetching categories:", error));
+    }, []);
 
     useEffect(() => {
         setPage(0);
-        fetchAuctions(0, sort, priceRange, selectedCategories, false);
-    }, [sort, priceRange, selectedCategories, fetchAuctions]);
+        fetchAuctions(0, sort, priceRange, selectedCategories, debouncedSearchTerm, false);
+    }, [sort, priceRange, selectedCategories, debouncedSearchTerm, fetchAuctions]);
 
     const handleExploreMore = () => {
         const nextPage = page + 1;
         setPage(nextPage);
-        fetchAuctions(nextPage, sort, priceRange, selectedCategories, true);
+        fetchAuctions(nextPage, sort, priceRange, selectedCategories, debouncedSearchTerm, true);
     };
 
     const handleSortChange = (e) => {
@@ -88,6 +107,13 @@ const ShopPage = () => {
             />
             <div className="shop-main-content">
                 <div className="shop-header">
+                    <input
+                        type="text"
+                        placeholder="Search by name or description..."
+                        className="search-input"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <select className="sort-dropdown" value={sort} onChange={handleSortChange}>
                         <option value="startTime,desc">Sort by Newness</option>
                         <option value="startPrice,asc">Sort by Price: Low to High</option>
