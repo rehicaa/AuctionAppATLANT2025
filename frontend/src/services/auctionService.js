@@ -3,7 +3,7 @@ import authHeader from './authHeader';
 
 const API_URL = 'http://localhost:8080/api/auctions';
 
-const getAuctions = (page = 0, size = 8, sortBy = 'startTime', sortOrder = 'desc', minPrice = null, maxPrice = null, categoryIds = []) => {
+const getAuctions = (page = 0, size = 8, sortBy = 'startTime', sortOrder = 'desc', minPrice = null, maxPrice = null, categoryIds = [], searchTerm = '') => {
     const params = new URLSearchParams({
         page,
         size,
@@ -19,6 +19,9 @@ const getAuctions = (page = 0, size = 8, sortBy = 'startTime', sortOrder = 'desc
     }
     if (categoryIds.length > 0) {
         categoryIds.forEach(id => params.append('categoryIds', id));
+    }
+    if (searchTerm) {
+        params.append('searchTerm', searchTerm);
     }
 
     return axios.get(API_URL, { params });

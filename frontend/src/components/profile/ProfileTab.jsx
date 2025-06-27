@@ -28,13 +28,18 @@ const ProfileTab = () => {
     useEffect(() => {
         const user = authService.getCurrentUser();
         if (user && user.token) {
-            const decoded = jwtDecode(user.token);
-            setFormData(prev => ({
-                ...prev,
-                firstName: decoded.firstName || '',
-                lastName: decoded.lastName || '',
-                email: decoded.sub || ''
-            }));
+            try {
+                const decoded = jwtDecode(user.token);
+                setFormData(prev => ({
+                    ...prev,
+                    firstName: decoded.firstName || '',
+                    lastName: decoded.lastName || '',
+                    email: decoded.sub || ''
+                }));
+            } catch (error) {
+                console.error("Failed to decode token:", error);
+                authService.logout();
+            }
         }
     }, []);
     
@@ -51,11 +56,13 @@ const ProfileTab = () => {
         const uploadFormData = new FormData();
         uploadFormData.append('image', file);
         
-        const API_KEY = '0b9c1184c4722152f4a205268242dbc2';
+        const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
 
         try {
-            const response = await axios.post(`https://api.imgbb.com/1/upload?key=${API_KEY}`, uploadFormData);
-            setFormData(prev => ({ ...prev, profileImageUrl: response.data.data.url }));
+            const response = await axios.post(`https://api.imgbb.com/1/upload?key=${apiKey}`, uploadFormData);
+            if (response.data && response.data.data && response.data.data.url) {
+                setFormData(prev => ({ ...prev, profileImageUrl: response.data.data.url }));
+            }
         } catch (error) {
             console.error("Image upload failed", error);
         } finally {
@@ -79,7 +86,7 @@ const ProfileTab = () => {
                         <label htmlFor="photo-upload" className="link-button">
                             {isUploading ? 'Uploading...' : 'Change photo'}
                         </label>
-                        <input id="photo-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} />
+                        <input id="photo-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} disabled={isUploading} />
                     </div>
                     <div className="form-fields">
                         <div className="form-row">

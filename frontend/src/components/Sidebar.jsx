@@ -13,6 +13,13 @@ const Sidebar = ({ onPriceChange, onCategoryChange, allCategories, selectedCateg
     const handleAfterChange = (value) => {
         onPriceChange(value);
     };
+    
+    const handleStyle = [
+        { borderColor: 'var(--primary-color)' },
+        { borderColor: 'var(--primary-color)' }
+    ];
+    
+    const trackStyle = { backgroundColor: 'var(--primary-color)' };
 
     return (
         <aside className="sidebar">
@@ -43,11 +50,8 @@ const Sidebar = ({ onPriceChange, onCategoryChange, allCategories, selectedCateg
                         defaultValue={[0, 1000]}
                         onChange={handleSliderChange}
                         onAfterChange={handleAfterChange}
-                        trackStyle={[{ backgroundColor: 'var(--primary-color)' }]}
-                        handleStyle={[
-                            { borderColor: 'var(--primary-color)' },
-                            { borderColor: 'var(--primary-color)' }
-                        ]}
+                        trackStyle={[trackStyle]}
+                        handleStyle={handleStyle}
                     />
                     <div className="price-display">
                         <span>${price[0]}</span>

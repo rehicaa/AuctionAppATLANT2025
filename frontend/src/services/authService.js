@@ -2,30 +2,36 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
 
-const register = (firstName, lastName, email, password) => {
-    return axios.post(API_URL + 'register', {
-        firstName,
-        lastName,
-        email,
-        password,
-    }).then(response => {
+const register = async (firstName, lastName, email, password) => {
+    try {
+        const response = await axios.post(API_URL + 'register', {
+            firstName,
+            lastName,
+            email,
+            password,
+        });
         if (response.data.token) {
             localStorage.setItem('user', JSON.stringify(response.data));
         }
         return response.data;
-    });
+    } catch (error) {
+        throw error;
+    }
 };
 
-const login = (email, password) => {
-    return axios.post(API_URL + 'login', {
-        email,
-        password,
-    }).then(response => {
+const login = async (email, password) => {
+    try {
+        const response = await axios.post(API_URL + 'login', {
+            email,
+            password,
+        });
         if (response.data.token) {
             localStorage.setItem('user', JSON.stringify(response.data));
         }
         return response.data;
-    });
+    } catch (error) {
+        throw error;
+    }
 };
 
 const logout = () => {
@@ -33,17 +39,23 @@ const logout = () => {
 };
 
 const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem('user'));
+    try {
+        return JSON.parse(localStorage.getItem('user'));
+    } catch (error) {
+        return null;
+    }
 };
 
-const loginWithGoogle = (token) => {
-    return axios.post(API_URL + 'google', { token })
-        .then(response => {
-            if (response.data.token) {
-                localStorage.setItem('user', JSON.stringify(response.data));
-            }
-            return response.data;
-        });
+const loginWithGoogle = async (token) => {
+    try {
+        const response = await axios.post(API_URL + 'google', { token });
+        if (response.data.token) {
+            localStorage.setItem('user', JSON.stringify(response.data));
+        }
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 const authService = {

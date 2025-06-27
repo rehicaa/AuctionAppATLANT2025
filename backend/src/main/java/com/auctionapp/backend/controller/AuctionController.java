@@ -31,12 +31,13 @@ public class AuctionController {
             @RequestParam(defaultValue = "desc") String sortOrder,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
-            @RequestParam(required = false) List<Long> categoryIds) {
+            @RequestParam(required = false) List<Long> categoryIds,
+            @RequestParam(required = false) String searchTerm) {
         
         Sort.Direction direction = "asc".equalsIgnoreCase(sortOrder) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         
-        Page<AuctionDTO> auctions = auctionService.getAuctions(pageable, minPrice, maxPrice, categoryIds);
+        Page<AuctionDTO> auctions = auctionService.getAuctions(pageable, minPrice, maxPrice, categoryIds, searchTerm);
         return ResponseEntity.ok(auctions);
     }
 

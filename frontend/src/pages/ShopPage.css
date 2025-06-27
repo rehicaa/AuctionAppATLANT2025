@@ -70,3 +70,18 @@
     background-color: var(--label-color);
     cursor: not-allowed;
 }
+
+.search-input {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    width: 250px;
+    margin-right: auto;
+}
+
+.shop-header {
+    justify-content: flex-start;
+    gap: 20px;
+}

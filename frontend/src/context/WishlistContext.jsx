@@ -11,29 +11,37 @@ export const WishlistProvider = ({ children }) => {
     const currentUser = authService.getCurrentUser();
 
     useEffect(() => {
-        if (currentUser) {
-            wishlistService.getWishlist()
-                .then(response => {
-                    const itemIds = response.data.map(item => item.id);
-                    setWishlist(new Set(itemIds));
-                })
-                .catch(err => console.error("Could not fetch wishlist", err));
-        }
-    }, [currentUser]);
+        const fetchWishlist = async () => {
+            try {
+                const response = await wishlistService.getWishlist();
+                const itemIds = response.data.map(item => item.id);
+                setWishlist(new Set(itemIds));
+            } catch (err) {
+              
+                console.error("Could not fetch wishlist", err);
+                setWishlist(new Set()); 
+            }
+        };
 
-    const addToWishlist = (auctionId) => {
-        return wishlistService.addToWishlist(auctionId).then(() => {
-            setWishlist(prev => new Set(prev).add(auctionId));
-        });
+        if (currentUser) {
+            fetchWishlist();
+        } else {
+           
+            setWishlist(new Set());
+        }
+    }, [currentUser]); 
+
+    const addToWishlist = async (auctionId) => {
+        await wishlistService.addToWishlist(auctionId);
+        setWishlist(prev => new Set(prev).add(auctionId));
     };
 
-    const removeFromWishlist = (auctionId) => {
-        return wishlistService.removeFromWishlist(auctionId).then(() => {
-            setWishlist(prev => {
-                const newWishlist = new Set(prev);
-                newWishlist.delete(auctionId);
-                return newWishlist;
-            });
+    const removeFromWishlist = async (auctionId) => {
+        await wishlistService.removeFromWishlist(auctionId);
+        setWishlist(prev => {
+            const newWishlist = new Set(prev);
+            newWishlist.delete(auctionId);
+            return newWishlist;
         });
     };
 
