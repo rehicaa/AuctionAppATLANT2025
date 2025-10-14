@@ -73,23 +73,6 @@ mvnw test             -> Pokretanje testova
 
 ---
 
-### STRUKTURA PROJEKTA
-
-AuctionAppATLANT2025/
-│
-├── backend/                 # Spring Boot backend
-│   ├── src/
-│   ├── pom.xml
-│   └── application.properties
-│
-├── frontend/                # React frontend
-│   ├── src/
-│   ├── package.json
-│   └── public/
-│
-└── README.md
-
----
 
 ### 👤 Autor
 
